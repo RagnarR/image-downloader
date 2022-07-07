@@ -41,7 +41,7 @@
   (let [attrs (html/select (html/html-resource (URL. url)) [:div.fileText :a])
         dir-path (str dir (get-description! url) "/")]
     (.mkdir (File. dir-path))
-    (pmap #(save-image! (str "https:" (get-in % [:attrs :href])) dir-path (first (get % :content))) attrs)))
+    (doall (pmap #(save-image! (str "https:" (get-in % [:attrs :href])) dir-path (first (get % :content))) attrs))))
 
 (defn parse-html-from-url
   "Parsing HTML code from the provided URL"
@@ -53,7 +53,7 @@
      (map #(save-image! (str "https:" (get-in % [:attrs :href])) dir-path (first (get % :content))) attrs))))
 
 (defn -main
-  [file & args]
+  [file]
    (let [props (load-properties! file)]
      (time (doall (pmap #(fetch-urls-for-images % (get props :base-folder)) (get props :download-urls)))))
   )
